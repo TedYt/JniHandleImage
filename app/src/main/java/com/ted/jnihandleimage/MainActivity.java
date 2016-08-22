@@ -8,8 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "mainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,14 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        TestJni();
+    }
+
+    private void TestJni() {
+        JniHandle jni = new JniHandle();
+        String str = jni.test();
+        Toast.makeText(this, str,Toast.LENGTH_LONG).show();
     }
 
     @Override
