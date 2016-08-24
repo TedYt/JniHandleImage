@@ -18,3 +18,32 @@ Otherwise, there will be a runtime error like this:
 
 And You can find libjniimage.so under the folder of app/build/intermediates/ndk/debug/lib/ 
 There are all type so files, such as arm64-v8a, armeabi, armeabi-v7a and so on.
+
+#Logcat in JNI
+Please put ' ldLibs "log" ' in ndk block, like this
+
+defaultConfig {
+        ...
+        ndk {
+            moduleName "jniimage"
+            ldLibs "log"
+        }
+        ...
+}
+
+add some code in c file, like this 
+#define TAG "jniHandleImage"
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,TAG ,__VA_ARGS__) // 定义LOGD类型
+
+And then you can catch log via ' adb logcat -s jniHandleImage '
+
+
+#send Bitmap to JNI
+This is no Bitmap Object in JNI, but you can use Object to receive the argument of Object
+For example, you call the JNI method like this :
+    mJniHandle.convertToGray(mBitmapOrig, mBitmapGray);
+The declaration of the method will be like this :
+    public native void convertToGray(Object bitmapIn, Object bitmapOut);
+
+
+

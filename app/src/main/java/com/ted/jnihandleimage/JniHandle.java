@@ -12,4 +12,5 @@ public class JniHandle {
     }
 
     public native String test();
+    public native void convertToGray(Object bitmapIn, Object bitmapOut);
 }

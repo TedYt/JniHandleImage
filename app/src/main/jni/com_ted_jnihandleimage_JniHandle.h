@@ -15,6 +15,10 @@ extern "C" {
 JNIEXPORT jstring JNICALL Java_com_ted_jnihandleimage_JniHandle_test
   (JNIEnv *, jobject);
 
+JNIEXPORT void JNICALL
+Java_com_ted_jnihandleimage_JniHandle_convertToGray(JNIEnv *env, jobject instance, jobject bitmapIn,
+                                                    jobject bitmapOut);
+
 #ifdef __cplusplus
 }
 #endif
