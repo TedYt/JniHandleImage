@@ -111,9 +111,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void onConvertToGray() {
         mBitmapGray = Bitmap.createBitmap(mBitmapOrig.getWidth(),
                 mBitmapOrig.getHeight(), Bitmap.Config.ALPHA_8);
-        Bitmap bitmap = Bitmap.createBitmap(mBitmapOrig.getWidth(),
-                mBitmapOrig.getHeight(), Bitmap.Config.ALPHA_8);
 
         mJniHandle.convertToGray(mBitmapOrig, mBitmapGray);
+
+        mImageV.setImageBitmap(mBitmapGray);
     }
 }

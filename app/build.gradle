@@ -12,7 +12,7 @@ android {
         versionName "1.0"
         ndk {
             moduleName "jniimage"
-            ldLibs "log" //实现__android_log_print,必须的
+            ldLibs "log","jnigraphics"
         }
     }
     buildTypes {

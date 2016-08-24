@@ -46,4 +46,21 @@ The declaration of the method will be like this :
     public native void convertToGray(Object bitmapIn, Object bitmapOut);
 
 
+#Bitmap operation in JNI
+If you want to use these methods:
+    AndroidBitmap_getInfo(...)
+    AndroidBitmap_lockPixels(...)
+    AndroidBitmap_unlockPixels(...)
+
+1. add #include <android/bitmap.h> in c file
+2. put "jnigraphics" in ndk block in build.gradle, like this 
+
+defaultConfig {
+        ...
+        ndk {
+            moduleName "jniimage"
+            ldLibs "log","jnigraphics"
+        }
+        ...
+}
 
