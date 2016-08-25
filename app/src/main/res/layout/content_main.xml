@@ -20,14 +20,31 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_below="@id/textview">
         <Button
             android:id="@+id/bt_gray"
             android:layout_width="100dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingRight="10dip"
             android:text="Gray"
+            android:textSize="12sp"/>
+        <Button
+            android:id="@+id/bt_brighter"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingRight="10dip"
+            android:text="Brighter"
+            android:textSize="12sp"/>
+        <Button
+            android:id="@+id/bt_dimmer"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingRight="10dip"
+            android:text="Dimmer"
             android:textSize="12sp"/>
     </LinearLayout>
     <ImageView

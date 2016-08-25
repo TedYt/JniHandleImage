@@ -53,18 +53,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtGray = (Button)findViewById(R.id.bt_gray);
         mBtGray.setOnClickListener(this);
 
-        initBitmapOri();
+        findViewById(R.id.bt_brighter).setOnClickListener(this);
+        findViewById(R.id.bt_dimmer).setOnClickListener(this);
+        initBitmap();
     }
 
-    private void initBitmapOri() {
+    private void initBitmap() {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         mBitmapOrig = BitmapFactory.decodeResource(getResources(),
                     R.mipmap.test,options);
-        if (mBitmapOrig != null){
-            Log.i(TAG, "set image bitmap successfully");
-            mImageV.setImageBitmap(mBitmapOrig);
+        if (mBitmapOrig == null){
+            Log.e(TAG, "set mBitmapOrig FAILED !");
+            return;
         }
+        mImageV.setImageBitmap(mBitmapOrig);
+
+        mBitmapGray = Bitmap.createBitmap(mBitmapOrig.getWidth(),
+                mBitmapOrig.getHeight(), Bitmap.Config.ALPHA_8);
+
+        if (mBitmapGray == null){
+            Log.e(TAG, "set mBitmapGray FAILED !");
+            return;
+        }
+
     }
 
     private void TestJni() {
@@ -103,17 +115,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG,"Click bt_gray");
                 onConvertToGray();
                 break;
+            case R.id.bt_brighter:
+                onBrighter();
+                break;
+            case R.id.bt_dimmer:
+                onDimmer();
+                break;
             default:
                 break;
         }
     }
 
+    private void onDimmer() {
+        if (mBitmapOrig == null || mBitmapGray == null){
+            Log.e(TAG, "some bitmaps are NULL, please init them first! ");
+            return;
+        }
+        mJniHandle.changeBright(mBitmapGray,1);
+        mImageV.setImageBitmap(mBitmapGray);
+    }
+
+    private void onBrighter() {
+        if (mBitmapOrig == null || mBitmapGray == null){
+            Log.e(TAG, "some bitmaps are NULL, please init them first! ");
+            return;
+        }
+
+        mJniHandle.changeBright(mBitmapGray,2);
+        mImageV.setImageBitmap(mBitmapGray);
+    }
+
     private void onConvertToGray() {
-        mBitmapGray = Bitmap.createBitmap(mBitmapOrig.getWidth(),
-                mBitmapOrig.getHeight(), Bitmap.Config.ALPHA_8);
+
+        if (mBitmapOrig == null || mBitmapGray == null){
+            Log.e(TAG, "some bitmaps are NULL, please init them first! ");
+            return;
+        }
 
         mJniHandle.convertToGray(mBitmapOrig, mBitmapGray);
 
         mImageV.setImageBitmap(mBitmapGray);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBitmapOrig !=null && !mBitmapOrig.isRecycled()){
+            mBitmapOrig.recycle();
+            mBitmapOrig = null;
+        }
+
+        if (mBitmapGray!=null && !mBitmapGray.isRecycled()){
+            mBitmapGray.recycle();
+            mBitmapGray = null;
+        }
     }
 }

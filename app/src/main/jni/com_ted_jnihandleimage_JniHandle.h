@@ -19,6 +19,10 @@ JNIEXPORT void JNICALL
 Java_com_ted_jnihandleimage_JniHandle_convertToGray(JNIEnv *env, jobject instance, jobject bitmapIn,
                                                     jobject bitmapOut);
 
+JNIEXPORT void JNICALL
+        Java_com_ted_jnihandleimage_JniHandle_changeBright(JNIEnv *env, jobject instance, jobject bitmap,
+                                                           jint type);
+
 #ifdef __cplusplus
 }
 #endif

@@ -110,10 +110,12 @@ Java_com_ted_jnihandleimage_JniHandle_convertToGray(
 
     for (y = 0; y < infocolor.height; ++y) {
         //每一行的首地址（刚开始是图片的首地址，即第一行的首地址，下面会换行）
+        //彩图是每个像素是4个bytes，就是32位的，所以要用一个32位的地址来接收
         argb* line = (argb*) pixelcolor;
+        //灰图每个像素是1个byte，就是8位
         unsigned * grayline = (unsigned *)pixelgray;
 
-        //一个像素一个像素的改
+        //一个像素一个像素的改，将像素的R，G，B，按照一定的比例缩小
         for (x = 0; x < infocolor.width; ++x) {
             grayline[x] = 0.3*line[x].red + 0.59*line[x].green + 0.11*line[x].blue;
         }
@@ -121,10 +123,68 @@ Java_com_ted_jnihandleimage_JniHandle_convertToGray(
         //换行， 每行的首地址+每行的跨度 = 下一行的首地址
         pixelcolor = (char *) pixelcolor + infocolor.stride;
         pixelgray = (char *) pixelgray + infogray.stride;
-
-        LOGI("unLocking pixels");
-        AndroidBitmap_unlockPixels(env,bitmapIn);
-        AndroidBitmap_unlockPixels(env,bitmapOut);
     }
 
+    LOGI("unLocking pixels");
+    AndroidBitmap_unlockPixels(env,bitmapOut);
+    AndroidBitmap_unlockPixels(env,bitmapIn);
+
+}
+
+JNIEXPORT void JNICALL
+Java_com_ted_jnihandleimage_JniHandle_changeBright(JNIEnv *env, jobject instance,
+                                                   jobject bitmap, jint type) {
+
+    AndroidBitmapInfo infogray;
+    void* pixelgray;
+    int ret;
+    int x,y;
+    unsigned save;
+
+    if ((ret = AndroidBitmap_getInfo(env, bitmap, &infogray)) < 0){
+        LOGE("AndroidBitmap_getInfo FAILED ! error = %d", ret);
+        return;
+    }
+
+    LOGI("Change Brightness , type is %d" ,type);
+
+    LOGI("Bitmap : width is %d, height is %d, stride is %d, format is %d, flags is %d",
+        infogray.width,
+        infogray.height,
+        infogray.stride,
+        infogray.format,
+        infogray.flags);
+
+    if (infogray.format != ANDROID_BITMAP_FORMAT_A_8){
+        LOGE("Bitmpa format is not A_8");
+        return;
+    }
+
+    if ((ret = AndroidBitmap_lockPixels(env, bitmap, &pixelgray)) < 0){
+        LOGE("AndroidBitmap_lockPixel() failed ! error = %d", ret);
+    }
+
+    LOGI("Begin to modify pixels...");
+
+    for (y = 0; y < infogray.height; ++y) {
+        unsigned * grayline = (unsigned *) pixelgray;
+        int v;
+        for (x = 0; x < infogray.width; ++x) {
+            v = (int)grayline[x];
+            if (type == 1){
+                v -= 5;
+            }else{
+                v += 1;
+            }
+            if (v >= 255){
+                grayline[x] = 255;
+            }else if (v < 0){
+                grayline[x] = 0;
+            } else{
+                grayline[x] = (unsigned)v;
+            }
+        }
+        pixelgray = (char *)pixelgray + infogray.stride;
+    }
+    AndroidBitmap_unlockPixels(env, bitmap);
 }
